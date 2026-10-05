@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yılın Kaçıncı Günü Hesaplayıcı</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #333;
+        }
+        .container {
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        h1 {
+            font-size: 22px;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #555;
+        }
+        input[type="date"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        input[type="date"]:focus {
+            border-color: #3498db;
+        }
+        .results {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border-left: 4px solid #3498db;
+            text-align: left;
+        }
+        .results p {
+            margin: 8px 0;
+            font-size: 15px;
+        }
+        .highlight {
+            font-weight: bold;
+            color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Yılın Kaçıncı Günü?</h1>
+        
+        <div class="input-group">
+            <label for="tarihSecimi">Tarih Seçin:</label>
+            <input type="date" id="tarihSecimi">
+        </div>
+
+        <div class="results" id="sonucAlani">
+            <p>Seçilen gün: <span id="kacinciGun" class="highlight">-</span></p>
+            <p>Kalan gün: <span id="kalanGun" class="highlight">-</span></p>
+            <p>Yılın toplam günü: <span id="toplamGun" class="highlight">-</span></p>
+        </div>
+    </div>
+
+    <script>
+        const tarihInput = document.getElementById('tarihSecimi');
+        const kacinciGunSpan = document.getElementById('kacinciGun');
+        const kalanGunSpan = document.getElementById('kalanGun');
+        const toplamGunSpan = document.getElementById('toplamGun');
+
+        // Sayfa ilk açıldığında bugünün tarihini seçili yap
+        const bugun = new Date();
+        tarihInput.valueAsDate = bugun;
+        hesapla(bugun);
+
+        tarihInput.addEventListener('change', function() {
+            if (this.value) {
+                const secilenTarih = new Date(this.value);
+                hesapla(secilenTarih);
+            }
+        });
+
+        function hesapla(tarih) {
+            const yil = tarih.getFullYear();
+            const yilBasi = new Date(yil, 0, 1);
+            
+            // Yılın kaçıncı günü olduğunu hesapla (milisaniyeden güne çevir)
+            const farkMilisaniye = tarih - yilBasi;
+            const kacinciGun = Math.floor(farkMilisaniye / (1000 * 60 * 60 * 24)) + 1;
+
+            // Artık yıl kontrolü ile toplam gün sayısını bul
+            const artikYilMi = (yil % 4 === 0 && yil % 100 !== 0) || (yil % 400 === 0);
+            const toplamGun = artikYilMi ? 366 : 365;
+
+            const kalanGun = toplamGun - kacinciGun;
+
+            // Sonuçları ekrana yazdır
+            kacinciGunSpan.textContent = `${yil} yılının ${kacinciGun}. günü`;
+            kalanGunSpan.textContent = `${kalanGun} gün kaldı`;
+            toplamGunSpan.textContent = `${toplamGun} gün`;
+        }
+    </script>
+
+</body>
+</html>
